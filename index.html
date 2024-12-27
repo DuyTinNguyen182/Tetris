@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tetris</title>
+  <link rel="icon" href="Images/tetris.jpg" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+</head>
+<body>
+  <audio id="bgmusic" src="Audios/bgr_music.mp3" loop></audio>
+  <audio id="cpl-rows-music" src="Audios/complete-rows.mp3"></audio>
+  <audio id="game-over-music" src="Audios/game-over.mp3"></audio>
+  <!-- Giao diện nhập tên người chơi -->
+  <div id="startScreen">
+    <div id="img-name"></div>
+    <div id="player-name-container">
+      <label for="player-name">Nhập tên của bạn</label>
+      <input type="text" id="player-name" placeholder="Tên người chơi">
+      <button id="start-game">Bắt đầu chơi</button>
+    </div>
+  </div>
+  <video class="input_video" style="display:none;"></video>
+  <div id="media-pipe" class="media-pipe"><canvas class="output_canvas" id="videoCanvas"></canvas></div>
+  <div class="instruct" id="instruct"></div>
+  <div id="ranking"><div id="title_ranking">Bảng xếp hạng</div><ul id="leaderboard"></ul></div>
+  <div id="name"><!--TETRIS--></div>
+  <div id="message-2hand">Chỉ sử dụng 1 bàn tay!</div>
+  <div id="game-over" class="overlay">
+    <div class="game-over-message">
+      <p>Game Over!</p>
+      <button id="game-over-btn">OK</button>
+    </div>
+  </div>
+  
+  <div class="container">
+    <canvas id="board"></canvas>
+    <div id="bonus-message"></div>
+    <div class="side-bar">
+      <div>        
+        <div id="text-score">Điểm<br><span id="score">0</span></div>
+        <div id="text-highscore">Điểm cao nhất<br><span id="high-score">0</span></div>
+    </div>
+    <div id="block-nextbrick">
+        Tiếp theo
+        <canvas id="next-brick"></canvas>
+      </div>
+      <div>
+        <button class="play-btn" id="play">Chơi</button>
+        <button class="pause-btn" id="pause">Dừng</button>
+      </div>      
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="process-mediapipe.js"></script>
+</body>
+</html>
