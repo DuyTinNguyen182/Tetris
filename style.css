@@ -171,7 +171,7 @@ body::before {
 
 #ranking {
   width: 280px;
-  height: 420px;
+  height: 300px;
   position: absolute;
   border-radius: 15px;
   top: 80px;
@@ -196,7 +196,7 @@ body::before {
 }
 
 #leaderboard{
-  font-size: 25px;
+  font-size: 20px;
   list-style: none;
 }
 
