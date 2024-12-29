@@ -1,12 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
-import {
-  getDatabase,
-  set,
-  get,
-  ref,
-  onValue,
-  child,
+import {getDatabase,set,get,ref,onValue,child,
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 import * as scrt from "./script.js";
 
@@ -21,7 +15,6 @@ const firebaseConfig = {
   appId: "1:807096461470:web:bed78545c894b1ddc2338f",
   measurementId: "G-0V82C37234"
 };
-
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
@@ -52,54 +45,30 @@ export function getUserData() {
 
   onValue(postsRef, (snapshot) => {
     const data = snapshot.val();
-
-    // Process the user data into an array
     let leaderboard = Object.keys(data).map((key) => {
       return { name: key, ...data[key] };
     });
-
     leaderboard.sort((a, b) => b.score - a.score);
-    //console.log(usersArray)
-
     WriteScore("leaderboard", leaderboard);
   });
 }
 
-export function WriteScore(idtag, plr) {
-  document.getElementById(idtag).innerHTML = "";
+export function WriteScore(tagName, player) {
+  document.getElementById(tagName).innerHTML = "";
   let scoreText = "";
-  
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 10; i++) {
     scoreText +=
-      "Hạng " + (i + 1) + ": " + plr[i].name + "-" + plr[i].score + "<br>";
+      "Hạng " + (i + 1) + ": " + player[i].name + "-" + player[i].score + "<br>";
   }
-  
-  for (let i = 0; i < plr.length; i++) {
-    if(plr[i].name === scrt.getName()){
+  for (let i = 0; i < player.length; i++) {
+    if(player[i].name === scrt.getName()){
       scoreText += ("Bạn: Hạng " + (i+1))
     }
   }
   console.log(`Player name is: ${scrt.getName()}`);
-  document.getElementById(idtag).innerHTML = scoreText;
+  document.getElementById(tagName).innerHTML = scoreText;
 }
 console.log(`Player name is: ${scrt.getName()}`);
-// export function AutoRandomID() {
-//   return "ID" + Math.floor(Math.random() * 500);
-// }
-// get_Point_ByID("Hiep4").then((point) => {
-//   console.log(point);
-// });
 
-
-// document.getElementById("reset-btn").addEventListener("click", function () {
-//   writeUserData(useridgame, GetName(), GetPoint());
-// });
-
-// document.getElementById("Board").addEventListener("click", function () {
-//   writeUserData(useridgame, GetName(), GetPoint());
-//   getUserData();
-// });
-
-// writeUserData("KD", 10)
+writeUserData("Kha", 20)
 getUserData();
-
