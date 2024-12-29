@@ -196,7 +196,7 @@ let isPaused = false;
 let refresh; // Lưu trạng thái setInterval
 let pauseButton = document.getElementById('pause');
 let resetButton = document.getElementById('reset');
-import * as fb from "./test.js";
+import * as fb from "./connect_firebase.js";
 // Hiển thị điểm cao nhất từ localStorage
 // let highScore = 0;
 let curr_point_db = localStorage.getItem('highScore') || 0;
