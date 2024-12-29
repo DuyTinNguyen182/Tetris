@@ -819,9 +819,9 @@ hands.onResults((results) => {
         }
                     
 
-        console.log(`Fingers: ${fingers}`);
+        // console.log(`Fingers: ${fingers}`);
         const command = detect_gesture(fingers);
-        console.log(`Command: ${command}`);
+        // console.log(`Command: ${command}`);
         if (!board.gameOver && board.isPlaying && !isPaused && (currentTime - previousMoveTime > 400)) {
           switch (command) {
             case 'LEFT':
