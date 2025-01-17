@@ -197,10 +197,9 @@ let refresh; // Lưu trạng thái setInterval
 let pauseButton = document.getElementById('pause');
 let resetButton = document.getElementById('reset');
 import * as fb from "./connect_firebase.js";
-// Hiển thị điểm cao nhất từ localStorage
-// let highScore = 0;
-let curr_point_db = localStorage.getItem('highScore') || 0;
-document.getElementById('high-score').innerText = curr_point_db;
+
+// let curr_point_db = localStorage.getItem('highScore') || 0;
+let curr_point_db = 0;
 
 const startScreen = document.getElementById('startScreen');
 let playGameButton = document.getElementById('start-game');
@@ -209,24 +208,20 @@ const MPipe = document.getElementById('media-pipe');
 const instruct = document.getElementById('instruct');
 const ranking = document.getElementById('ranking');
 document.getElementById("high-score").innerHTML = curr_point_db;
-// 
-// startScreen.style.display = 'none';
-// MPipe.style.display = 'block';
-// instruct.style.display = 'block';
-// ranking.style.display = 'block';
-// 
-playGameButton.addEventListener('click', () => {
+
+
+playGameButton.addEventListener('click', async () => {
     const playerNameInput = document.getElementById('player-name').value.trim();
     if (!playerNameInput) {
         alert('Vui lòng nhập tên người chơi!');
         return;
     }
+    curr_point_db = await fb.getUserScoreOrDefault(playerNameInput);
+    document.getElementById('high-score').innerText = curr_point_db;
     playerName = playerNameInput;
     fb.writeUserData(playerName, curr_point_db);
     fb.getUserData();
-    // highScore = fb.get_Point_ByName(playerName);
-    // console.log(`Player name is: ${playerName}`);
-    // updateLeaderboardImmediate(playerName);
+    console.log(curr_point_db);
     startScreen.style.display = 'none';
     MPipe.style.display = 'block';
     instruct.style.display = 'block';
@@ -261,11 +256,8 @@ class Board {
   generateWhiteBoard() {
     return Array.from({ length: ROWS }, () => Array(COLS).fill(WHITE_ID));
   }
-
   drawCell(xAxis, yAxis, colorId) {
-
     const color = COLOR_PALETTE[colorId] || COLOR_PALETTE[WHITE_ID];
-
     // Đổ nền màu cơ bản
     this.ctx.fillStyle = color;
     this.ctx.fillRect(
@@ -274,7 +266,6 @@ class Board {
       BLOCK_SIZE,
       BLOCK_SIZE
     );
-    
     // Đổ bóng ở dưới và bên phải để tạo chiều sâu
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     this.ctx.fillRect(
@@ -289,7 +280,6 @@ class Board {
       BLOCK_SIZE * 0.8,
       BLOCK_SIZE * 0.1
     );
-
     // Vẽ đường viền xung quanh ô
     this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
     this.ctx.strokeRect(
@@ -364,7 +354,7 @@ class Board {
           clearInterval(fadeInterval);
           resolve();
         }
-      }, 38); // Mỗi lần làm mờ 1 cột cách nhau 100ms
+      }, 10); // Mỗi lần làm mờ 1 cột cách nhau ms
     });
   }
   
@@ -373,19 +363,15 @@ class Board {
   handleScore(newScore) {
     this.score += newScore;
     document.getElementById('score').innerHTML = this.score;
-    fb.get_Point_ByName(playerName).then((point) => {
-      curr_point_db = point;
-    });
-    if (board.score > curr_point_db) {
-      fb.writeUserData(playerName, board.score); 
+    // fb.get_Point_ByName(playerName).then((point) => {
+    //   curr_point_db = point;
+    // });
+    if (this.score > curr_point_db) {
+      fb.writeUserData(playerName, this.score);
+      curr_point_db = this.score; 
       fb.getUserData();
-      document.getElementById("high-score").innerHTML = board.score;
-      localStorage.setItem("highScore", board.score);
+      document.getElementById("high-score").innerHTML = this.score;
     }
-    
-    // updateHighScore();
-    // updateLeaderboardImmediate(playerName);
-    console.log(`Player name is: ${playerName}`);
   }
 
   // Xử lý khi trò chơi kết thúc
@@ -453,6 +439,7 @@ class Brick {
       this.clear();
       this.rowPos++;
       this.draw();
+      // console.table(board.grid);
       return;
     }
 
@@ -507,17 +494,6 @@ class Brick {
     board.drawBoard();
   }
 }
-
-// Cập nhật điểm cao nhất
-// function updateHighScore() {
-//   lib.get_Point_ByName(playerName).then((point) => {
-//     curr_point_db = point;
-//   });
-//   if (board.score > curr_point_db) {
-//     fb.writeUserData(playerName, board.score);
-//     fb.getUserData();
-//   }
-// }
 
 // Hàm tạo và hiển thị khối gạch mới
 function generateNewBrick() {
@@ -671,60 +647,12 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// let leaderboard = [
-//   { name: "Player1", score: 100 },
-//   { name: "Player2", score: 90 },
-//   { name: "Player3", score: 80 },
-//   { name: "Player4", score: 70 },
-//   { name: "Player5", score: 60 },
-//   { name: "Player6", score: 50 },
-//   { name: "Player7", score: 40 },
-//   { name: "Player8", score: 30 },
-//   { name: "Player9", score: 20 },
-//   // { name: "Player10", score: 10 }
-// ];
-
-
-// function displayLeaderboard() {
-//   const leaderboardElement = document.getElementById("leaderboard");
-//   leaderboardElement.innerHTML = "";
-//   leaderboard.forEach((player, index) => {
-//     leaderboardElement.innerHTML += `<li>${index + 1}. ${player.name} - ${player.score}</li>`;
-//   });
-// }
-
-// function updateLeaderboardImmediate(playername) {
-//     // Kiểm tra xem người chơi đã có trong bảng xếp hạng hay chưa
-//     let youIndex = leaderboard.findIndex(player => player.name === playername);
-//     if (youIndex !== -1){
-//         // Nếu người chơi đã có, cập nhật điểm số nếu cao hơn
-//         leaderboard[youIndex].score = Math.max(leaderboard[youIndex].score, highScore);
-//     }
-//     else {
-//         // for (let i = 0; i < leaderboard.length; i++) {
-//         //     if (highScore > leaderboard[i].score) {
-//         //     leaderboard.splice(i, 0, { name: playername, score: highScore});
-//         //     youIndex = true;
-//         //     break;
-//         //     }
-//         // }
-//         leaderboard.splice(11, 0, { name: playername, score: highScore});
-//     }
-    
-//     // leaderboard = leaderboard.slice(0, 10);
-//     leaderboard.sort((a, b) => b.score - a.score);
-//     displayLeaderboard();
-// }
-
 // Khởi tạo bảng
 let board = new Board(ctx);
 board.drawBoard();
 
-// Hiển thị bảng xếp hạng ban đầu
-// updateLeaderboardImmediate(playerName);
-// displayLeaderboard();
-console.log(`Player name is: ${playerName}`);
-// showBonus("+5 Bonus!");
+// console.log(`Player name is: ${playerName}`);
+
 // Khi trang được tải, reset lại điểm cao nhất
 // window.onload = function() {
 //   localStorage.setItem('highScore', 0); // Reset điểm cao nhất về 0
@@ -743,13 +671,14 @@ let finger_id = [4, 8, 12, 16, 20];
 let previousMoveTime = 0; // Thời gian thực thi trước đó
 
 function detect_gesture(fingers) {
-  if (JSON.stringify(fingers) === JSON.stringify([1, 1, 1, 1, 1])) {
+  // So sánh trực tiếp từng phần tử
+  if (fingers[0] === 1 && fingers[1] === 1 && fingers[2] === 1 && fingers[3] === 1 && fingers[4] === 1) {
     return "ROTATE";
-  } else if(JSON.stringify(fingers) === JSON.stringify([0, 1, 1, 0, 0])){
+  } else if (fingers[0] === 0 && fingers[1] === 1 && fingers[2] === 1 && fingers[3] === 0 && fingers[4] === 0) {
     return "DOWN";
-  } else if (JSON.stringify(fingers) === JSON.stringify([1, 0, 0, 0, 0])) {
+  } else if (fingers[0] === 1 && fingers[1] === 0 && fingers[2] === 0 && fingers[3] === 0 && fingers[4] === 0) {
     return "LEFT";
-  } else if (JSON.stringify(fingers) === JSON.stringify([0, 0, 0, 0, 1])) {
+  } else if (fingers[0] === 0 && fingers[1] === 0 && fingers[2] === 0 && fingers[3] === 0 && fingers[4] === 1) {
     return "RIGHT";
   }
   return null;  // Trả về null nếu không khớp
@@ -782,7 +711,6 @@ hands.onResults((results) => {
   if (results.multiHandLandmarks) {
     results.multiHandLandmarks.forEach((landmarks, index) => {
       const handedness = results.multiHandedness[index].label; // 'Left' hoặc 'Right'
-      // console.log(`Hand ${index + 1}: ${handedness}`);
 
       if (results.multiHandLandmarks.length >= 2 && MPipe.style.display == 'block') {
         // console.log('Chi su dung 1 ban tay');
@@ -792,8 +720,6 @@ hands.onResults((results) => {
         let fingers = [0, 0, 0, 0, 0];
         if (handedness === 'Left') { // Do lật khung hình nên Left sẽ là bàn tay phải và ngược lại
           // Xử lí cho ngón cái - khối gạch qua trái
-          // console.log(`Toa do X: ${landmarks[finger_id[0]].x}`);
-          // console.log(`Toa do X -2: ${landmarks[finger_id[0] - 2].x}`);
           if (landmarks[finger_id[0]].x > (landmarks[finger_id[0] - 2].x + 0.015))
             fingers[0] = 1;
 
@@ -803,8 +729,6 @@ hands.onResults((results) => {
         }
         else{ // Bàn tay trái
           // Xử lí cho ngón cái - khối gạch qua phải
-          // console.log(`Toa do X: ${landmarks[finger_id[0]].x}`);
-          // console.log(`Toa do X -2: ${landmarks[finger_id[0] - 2].x}`);
           if (landmarks[finger_id[0]].x < (landmarks[finger_id[0] - 2].x - 0.015))
             fingers[4] = 1;
 
