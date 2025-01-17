@@ -1,12 +1,7 @@
 * {
   font-family: "Fraunces", serif;
 }
-  
-/* body {
-    background-color: rgb(206, 205, 205);
-} */
 
-/* Nền gradient chuyển màu liên tục */
 body {
   margin: 0;
   overflow: hidden;
@@ -145,7 +140,6 @@ body::before {
   background-color: rgba(255, 255, 255, 0.8);
   border: none;
   display: none;
-  /*z-index: 10;/* Đặt độ ưu tiên để đảm bảo ô này nằm trên các phần tử khác */
 }
 
 #videoCanvas {
@@ -159,7 +153,6 @@ body::before {
   position: absolute;
   top: 400px;
   left: 10px;
-  /* background-color: rgba(128, 128, 116, 0.8); */
   border: none;
   display: none;
   background-image: url("Images/Huongdan.png");
@@ -197,6 +190,8 @@ body::before {
 
 #leaderboard{
   font-size: 20px;
+  padding-top: 20px;
+  padding-left: 40px;
   list-style: none;
 }
 
