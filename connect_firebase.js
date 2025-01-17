@@ -28,17 +28,6 @@ export function writeUserData(name, point) {
   });
 }
 
-export function get_Point_ByName(name) {
-  const db = getDatabase();
-  const userRef = ref(db);
-
-  return get(child(userRef, "leaderboard/" + name))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        return snapshot.val().score;
-      } 
-    })
-}
 export function getUserData() {
   const db = getDatabase();
   const postsRef = ref(db, "leaderboard");
@@ -58,7 +47,7 @@ export function WriteScore(tagName, player) {
   let scoreText = "";
   for (let i = 0; i < 10; i++) {
     scoreText +=
-      "Hạng " + (i + 1) + ": " + player[i].name + "-" + player[i].score + "<br>";
+      "Hạng " + (i + 1) + ": " + player[i].name + " - " + player[i].score + "<br>";
   }
   for (let i = 0; i < player.length; i++) {
     if(player[i].name === scrt.getName()){
@@ -69,6 +58,22 @@ export function WriteScore(tagName, player) {
   document.getElementById(tagName).innerHTML = scoreText;
 }
 console.log(`Player name is: ${scrt.getName()}`);
+//
 
-writeUserData("Kha", 20)
+export async function getUserScoreOrDefault(name) {
+  const db = getDatabase();
+  const userRef = ref(db);
+  const snapshot = await get(child(userRef, `leaderboard/${name}`));
+  if (snapshot.exists()) {
+    const userData = snapshot.val();
+    // console.log(`User "${name}" exists. Score: ${userData.score}`);
+    return userData.score; // Người chơi đã tồn tại, trả về điểm
+  } else {
+    // console.log(`User "${name}" does not exist. Returning score 0.`);
+    return 0; // Người chơi không tồn tại, trả về 0
+  }
+}
+
+//
+// writeUserData("Luân", 40)
 getUserData();
