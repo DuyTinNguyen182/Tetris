@@ -308,10 +308,7 @@ class Board {
     }
   
     if (completedRows.length > 0) {
-      // Tạo hiệu ứng tan biến
-      this.fadeOutRows(completedRows).then(() => {
-        // Xóa các hàng đã hoàn thành sau hiệu ứng
-        const newRows = Array.from({ length: completedRows.length }, () => Array(COLS).fill(WHITE_ID));
+      const newRows = Array.from({ length: completedRows.length }, () => Array(COLS).fill(WHITE_ID));
         const remainingRows = this.grid.filter((_, row) => !completedRows.includes(row));
         this.grid = [...newRows, ...remainingRows];
         if(completedRows.length ==1){
@@ -332,8 +329,12 @@ class Board {
         
         audioCplRows.play(); // Phát âm thanh hoàn thành hàng
         this.drawBoard(); // Vẽ lại bảng
+      // Tạo hiệu ứng tan biến
+      // this.fadeOutRows(completedRows).then(() => {
+      //   // Xóa các hàng đã hoàn thành sau hiệu ứng
         
-      });
+        
+      // });
     }
   }
   
