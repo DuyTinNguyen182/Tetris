@@ -210,23 +210,23 @@ const ranking = document.getElementById('ranking');
 document.getElementById("high-score").innerHTML = curr_point_db;
 
 
-playGameButton.addEventListener('click', async () => {
-    const playerNameInput = document.getElementById('player-name').value.trim();
-    if (!playerNameInput) {
-        alert('Vui lòng nhập tên người chơi!');
-        return;
-    }
-    curr_point_db = await fb.getUserScoreOrDefault(playerNameInput);
-    document.getElementById('high-score').innerText = curr_point_db;
-    playerName = playerNameInput;
-    fb.writeUserData(playerName, curr_point_db);
-    fb.getUserData();
-    console.log(curr_point_db);
-    startScreen.style.display = 'none';
-    MPipe.style.display = 'block';
-    instruct.style.display = 'block';
-    ranking.style.display = 'block';
-});
+// playGameButton.addEventListener('click', async () => {
+//     const playerNameInput = document.getElementById('player-name').value.trim();
+//     if (!playerNameInput) {
+//         alert('Vui lòng nhập tên người chơi!');
+//         return;
+//     }
+//     curr_point_db = await fb.getUserScoreOrDefault(playerNameInput);
+//     document.getElementById('high-score').innerText = curr_point_db;
+//     playerName = playerNameInput;
+//     fb.writeUserData(playerName, curr_point_db);
+//     fb.getUserData();
+//     console.log(curr_point_db);
+//     startScreen.style.display = 'none';
+//     MPipe.style.display = 'block';
+//     instruct.style.display = 'block';
+//     ranking.style.display = 'block';
+// });
 
 
 // Thiết lập kích thước cho canvas theo số hàng và cột
@@ -623,9 +623,9 @@ function showBonus(bonusText) {
     bonusMessage.style.bottom = "-50px";
   }, 1000);
 }
-export function getName(){
-  return document.getElementById('player-name').value;
-}
+// export function getName(){
+//   return document.getElementById('player-name').value;
+// }
 // Xử lý sự kiện nhấn phím điều khiển khối gạch
 document.addEventListener('keydown', (e) => {
   if (!board.gameOver && board.isPlaying && !isPaused) {
